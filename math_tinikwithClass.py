@@ -106,10 +106,7 @@ class User(object):
     #To add a new line of record in the 'scoreboard.txt'
     def record(self):
         f = open("scoreboard.txt", "ra+")
-        if(self.checkIfExist() == False):
-            f.write("Player: %s \t - \t Time: %s \t - \t Score: %s \t - \t Errors: %s \n" %(self.userName, self.timeFormat(), self.score, self.error))
-        else:
-            pass
+        f.write("Player: %s \t - \t Time: %s \t - \t Score: %s \t - \t Errors: %s \n" %(self.userName, self.timeFormat(), self.score, self.error))
         
     #To display 'scoreboard.txt'
     def showRecord(self):
