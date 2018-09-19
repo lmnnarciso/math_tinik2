@@ -1,1 +1,2 @@
-# math_tinik2
+**errors:**
+ - Updating same player name
