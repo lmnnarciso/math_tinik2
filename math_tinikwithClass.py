@@ -32,7 +32,7 @@ class User(object):
         secondNumber = random.randint(10, 99)
         questionAnswer = firstNumber + secondNumber
         self.questionFormat(firstNumber, secondNumber, "+")
-        print(questionAnswer) #comment out for testing
+        #print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -46,7 +46,7 @@ class User(object):
         else:
             questionAnswer = secondNumber - firstNumber
             self.questionFormat(secondNumber, firstNumber, "-")
-        print(questionAnswer) #comment out for testing
+        #print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -55,7 +55,7 @@ class User(object):
         secondNumber = random.choice([i for i in range(0, 10) if i not in [0,1]])
         questionAnswer = firstNumber * secondNumber
         self.questionFormat(firstNumber, secondNumber, "x")
-        print(questionAnswer) #comment out for testing
+        #print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -73,7 +73,7 @@ class User(object):
             secondNumber = 1
         questionAnswer = firstNumber / secondNumber
         self.questionFormat(firstNumber, secondNumber, "/")
-        print(questionAnswer) #comment out for testing
+        #print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -172,7 +172,7 @@ class User(object):
         while(self.userName):
             self.userName = raw_input("Enter Username: ")
             startTime = time.time()
-            while(self.score < 4 and self.error < 10):
+            while(self.score < 10 and self.error < 10):
                 operation = random.randint(0,3)
                 if(operation == 0):
                     self.additionQuestion()
