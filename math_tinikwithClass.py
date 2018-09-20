@@ -218,7 +218,7 @@ class User(object):
             self.error = 0
             self.time = 0
             startTime = time.time()
-            while(self.score < 3 and self.error < 10):
+            while(self.score < 10 and self.error < 10):
                 operation = random.randint(0,3)
                 if(operation == 0):
                     self.additionQuestion()
@@ -230,7 +230,7 @@ class User(object):
                     self.divisionQuestion()
             endTime = time.time() - startTime
             self.time = endTime
-            if(self.score == 3):
+            if(self.score == 10):
                 self.sortScoreBoard()
             
         self.showRecord()
