@@ -26,13 +26,17 @@ class User(object):
             self.correct()
         else:
             self.wrong()
-        
+            
+    def recordFormat(self):
+        recordString = "Player: %s \t - \t Time: %s \t - \t Score: %s \t - \t Errors: %s \n" % (self.userName, self.timeFormat(), self.score, self.error)
+        return recordString
+    
     def additionQuestion(self):
         firstNumber = random.randint(10, 99)
         secondNumber = random.randint(10, 99)
         questionAnswer = firstNumber + secondNumber
         self.questionFormat(firstNumber, secondNumber, "+")
-        #print(questionAnswer) #comment out for testing
+        print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -46,7 +50,7 @@ class User(object):
         else:
             questionAnswer = secondNumber - firstNumber
             self.questionFormat(secondNumber, firstNumber, "-")
-        #print(questionAnswer) #comment out for testing
+        print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -55,7 +59,7 @@ class User(object):
         secondNumber = random.choice([i for i in range(0, 10) if i not in [0,1]])
         questionAnswer = firstNumber * secondNumber
         self.questionFormat(firstNumber, secondNumber, "x")
-        #print(questionAnswer) #comment out for testing
+        print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -73,7 +77,7 @@ class User(object):
             secondNumber = 1
         questionAnswer = firstNumber / secondNumber
         self.questionFormat(firstNumber, secondNumber, "/")
-        #print(questionAnswer) #comment out for testing
+        print(questionAnswer) #comment out for testing
         userAnswer = input("Enter answer: ")
         self.answerCheck(userAnswer, questionAnswer)
 
@@ -105,7 +109,7 @@ class User(object):
 
     #To add a new line of record in the 'scoreboard.txt'
     def record(self):
-        f = open("scoreboard.txt", "ra+")
+        f = open("scoreboard.txt", "a+")
         f.write("Player: %s \t - \t Time: %s \t - \t Score: %s \t - \t Errors: %s \n" %(self.userName, self.timeFormat(), self.score, self.error))
         
     #To display 'scoreboard.txt'
@@ -127,27 +131,58 @@ class User(object):
 
     #Function get all mm:ss in the text file and convert it to seconds then save it into a list so it can be use in sorting
     def convertAllTime(self, timeList):
+        #print(timeList)
         secondsList = list() 
         for time in timeList:
+            print(time)
             minutes, seconds = time.split(":")
             secondsList.append(int(minutes*60)+int(seconds))
         return secondsList
 
+    def updatedSort(self):
+        f = open("scoreboard.txt", "r")
+        newDict = dict()
+        timeList = self.timeExtract()
+        secondsList = self.convertAllTime(timeList)
+        usernamesList = self.extractUsernames()
+        
+        for i,line in enumerate(f):
+            newDict[line] = secondsList[i]
+            
+        sortedList = sorted(newDict, key=newDict.get)
+
+        return sortedList
+    
     #Uses the convertAllTime function to get all the time(seconds) then use it as a key for sorting the scoreboard.txt
     def sortScoreBoard(self):
         f = open("scoreboard.txt", "r")
-        newList = dict()
         timeList = self.timeExtract()
         secondsList = self.convertAllTime(timeList)
-        for i,line in enumerate(f):
-            newList[line] = secondsList[i]
+        usernamesList = self.extractUsernames()
+            
+        sortedList = self.updatedSort()
 
-        sortedList = sorted(newList, key=newList.get)
-
+        #print(sortedList[3])
+        #print(secondsList)
+        #print(self.time)
+        for i, user in enumerate(usernamesList):
+            if(self.userName == user):
+                if(int(self.time) < int(secondsList[i])):
+                    #print("entering" + self.timeFormat())
+                    sortedList[i] = self.recordFormat()
+                    f = open("scoreboard.txt", "w")
+                    for line in sortedList:
+                        f.write(line)
+            elif(self.userName not in usernamesList):
+                #print("entering else")
+                self.record()
+                
+        sortedList = self.updatedSort()
+        
         f = open("scoreboard.txt", "w")
         for line in sortedList:
             f.write(line)
-
+        
     #To extract all the usernames the scoreboard.txt
     def extractUsernames(self):
         f = open("scoreboard.txt", "r")
@@ -164,12 +199,26 @@ class User(object):
         userList = self.extractUsernames()
         for i, line in enumerate(f):
             newList[line] = userList[i]
-
+        
+    #def updateScores(self):
+    #    f = open("scoreboard.txt", "rw")
+    #    newDict = dict()
+    #    timeList = self.timeExtract()
+    #    allTimeList = self.convertAllTime(timeList)
+    #    usernamesList = self.extractUsernames()
+    #    userTime = zip(usernamesList, allTimeList)
+                
+    
     def questionnaire(self):
-        while(self.userName):
-            self.userName = raw_input("Enter Username: ")
+        while(True):
+            self.userName = raw_input("Username:")
+            if(self.userName == ''):
+                break
+            self.score = 0
+            self.error = 0
+            self.time = 0
             startTime = time.time()
-            while(self.score < 10 and self.error < 10):
+            while(self.score < 3 and self.error < 10):
                 operation = random.randint(0,3)
                 if(operation == 0):
                     self.additionQuestion()
@@ -181,11 +230,11 @@ class User(object):
                     self.divisionQuestion()
             endTime = time.time() - startTime
             self.time = endTime
-            if(self.score == 10):
-                self.record()
+            if(self.score == 3):
                 self.sortScoreBoard()
+            
         self.showRecord()
         
-user = User("oh", 0, 0, 0)
+user = User("", 0, 0, 0)
 
 user.questionnaire()
